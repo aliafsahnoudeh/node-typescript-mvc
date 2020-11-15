@@ -11,9 +11,14 @@ import ISampleRoutes from './ISampleRoutes';
    }
 
    public attach(): void {
-     this._app.route('/api/sample/:slug')
+    this._app.route('/api/sample/:slug')
     .get(
       this._controller.getBySlug.bind(this._controller)
+    );
+
+    this._app.route('/api/sample')
+    .get(
+      this._controller.getAll.bind(this._controller)
     );
 
     this._app.route('/api/sample')

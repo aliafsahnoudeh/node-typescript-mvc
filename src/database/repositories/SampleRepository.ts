@@ -22,8 +22,9 @@ class SampleRepository implements ISampleRepository {
         ).toArray();
     }
 
-    public getAll(): ISampleDbModel[] {
-        return [];
+    public async getAll(skip: number, limit: number): Promise<ISampleDbModel[]> {
+        return await this._databaseManager.database
+        .collection(COLLECTION_NAME).find().skip(skip).limit(limit).toArray();
     }
 
     public async insert(newEntry: ISampleDbModel): Promise<any> {

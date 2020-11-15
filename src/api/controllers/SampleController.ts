@@ -15,6 +15,26 @@ class SampleController implements ISampleController {
         this._validator = validator;
     }
 
+    public async getAll(req: any, res: any): Promise<void> {
+        try {
+            const query = { ...req.query };
+            const skip = parseInt(query.skip,  10);
+            const limit = parseInt(query.limit, 10);
+
+            const samples = await
+                this._repository.getAll(skip, limit);
+
+            res.status(HttpStatus.OK).json(samples);
+        } catch (error) {
+            // TODO better error handling with middlewares
+            if (error instanceof ValidationError) {
+                return res.status(HttpStatus.BAD_REQUEST).json(error);
+            } else {
+                res.status(HttpStatus.INTERNAL_SERVER_ERROR).json(error);
+            }
+        }
+    }
+
     public async getBySlug(req: any, res: any): Promise<void> {
         try {
             const params = { ...req.params };
