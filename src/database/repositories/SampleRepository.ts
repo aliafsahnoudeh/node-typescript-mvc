@@ -18,7 +18,7 @@ class SampleRepository implements ISampleRepository {
     public async getBySlug(slug: string): Promise<ISampleDbModel[]> {
         return await this._databaseManager.database
         .collection(COLLECTION_NAME).find(
-            { slug }
+            { slug: {$regex : `.*${slug}.*`} }
         ).toArray();
     }
 

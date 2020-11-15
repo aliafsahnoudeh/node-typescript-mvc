@@ -36,12 +36,12 @@ class SampleController implements ISampleController {
 
     public async create(req: any, res: any): Promise<void> {
         try {
-            const slug = { ...req.body };
+            const params = { ...req.body };
 
             const result = await
                 this._repository.insert(new SampleDbModel(
                     undefined,
-                    slug,
+                    params.slug,
                     undefined,
                     undefined,
                     undefined
