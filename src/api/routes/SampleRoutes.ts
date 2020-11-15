@@ -15,6 +15,11 @@ import ISampleRoutes from './ISampleRoutes';
     .get(
       this._controller.getBySlug.bind(this._controller)
     );
+
+    this._app.route('/api/sample')
+    .post(
+      this._controller.create.bind(this._controller)
+    );
    }
 }
 

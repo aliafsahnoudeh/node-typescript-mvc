@@ -1,4 +1,5 @@
 import ISampleRepository from '../../database/repositories/ISampleRepository';
+import SampleDbModel from '../../database/dbModels/SampleDbModel';
 import ISampleController from './ISampleController';
 import HttpStatus from 'http-status-codes';
 import IValidator from '../../api/validators/IValidator';
@@ -23,6 +24,30 @@ class SampleController implements ISampleController {
                 this._repository.getBySlug(params.slug);
 
             res.status(HttpStatus.OK).json(samples);
+        } catch (error) {
+            // TODO better error handling with middlewares
+            if (error instanceof ValidationError) {
+                return res.status(HttpStatus.BAD_REQUEST).json(error);
+            } else {
+                res.status(HttpStatus.INTERNAL_SERVER_ERROR).json(error);
+            }
+        }
+    }
+
+    public async create(req: any, res: any): Promise<void> {
+        try {
+            const slug = { ...req.body };
+
+            const result = await
+                this._repository.insert(new SampleDbModel(
+                    undefined,
+                    slug,
+                    undefined,
+                    undefined,
+                    undefined
+                ));
+
+            res.status(HttpStatus.OK).json(result.insertedId);
         } catch (error) {
             // TODO better error handling with middlewares
             if (error instanceof ValidationError) {
