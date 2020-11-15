@@ -1,0 +1,7 @@
+{
+  "terminal.integrated.shell.windows": "C:\\WINDOWS\\System32\\cmd.exe",
+  "editor.fontSize": 20,
+  "editor.codeActionsOnSave": {
+    "source.fixAll.tslint": true,
+  }
+}
