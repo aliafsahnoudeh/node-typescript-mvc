@@ -1,4 +1,5 @@
 interface ISampleRoutes {
+    registerApp(app: any): void;
     attach(): void;
 }
 

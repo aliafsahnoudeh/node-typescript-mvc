@@ -5,9 +5,12 @@ import ISampleRoutes from './ISampleRoutes';
    private _controller: ISampleController;
    private _app: any;
 
-   constructor(app: any, controller: ISampleController) {
+   constructor(controller: ISampleController) {
      this._controller = controller;
-     this._app = app;
+   }
+
+   public registerApp(app: any): void {
+    this._app = app;
    }
 
    public attach(): void {

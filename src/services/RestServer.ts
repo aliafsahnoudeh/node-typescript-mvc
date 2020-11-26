@@ -1,22 +1,20 @@
 import express from 'express';
 import IRestServer from './IRestServer';
 import bodyParser from 'body-parser';
-import SampleRoutes from '../api/routes/SampleRoutes';
-import SampleController from '../api/controllers/SampleController';
-import SampleRepository from '../database/repositories/SampleRepository';
-import DataBaseManager from '../database/manager/DatabaseManager';
 // import ValidationError from '../api/validators/ValidationError';
-import SampleValidator from '../api/validators/SampleValidator';
+import ISampleRoutes from 'api/routes/ISampleRoutes';
 
 class RestServer implements IRestServer {
     private port;
     private app;
     private host;
+    private sampleRoutes;
 
-    constructor(port: number, host: string) {
+    constructor(port: number, host: string, sampleRoutes: ISampleRoutes) {
       this.app = express();
       this.port = port;
       this.host = host;
+      this.sampleRoutes = sampleRoutes;
       this.initBodyParser();
       // this.registerValidationError();
       this.add_Access_Control_Allow_Headers();
@@ -62,12 +60,8 @@ class RestServer implements IRestServer {
     }
 
     private registerRoutes(): void {
-      const sampleRoutes = new SampleRoutes(this.app,
-        new SampleController(
-          new SampleRepository(DataBaseManager.getInstance(undefined)),
-        new SampleValidator()));
-
-        sampleRoutes.attach();
+      this.sampleRoutes.registerApp(this.app);
+      this.sampleRoutes.attach();
     }
 
     // private registerValidationError(): void {
