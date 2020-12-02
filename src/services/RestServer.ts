@@ -3,18 +3,22 @@ import IRestServer from './IRestServer';
 import bodyParser from 'body-parser';
 // import ValidationError from '../api/validators/ValidationError';
 import ISampleRoutes from 'api/routes/ISampleRoutes';
+import ILogger from './ILogger';
 
 class RestServer implements IRestServer {
-    private port;
-    private app;
-    private host;
-    private sampleRoutes;
+    private readonly port: number;
+    private readonly app: any;
+    private readonly host: string;
+    private readonly sampleRoutes: ISampleRoutes;
+    private readonly _logger: ILogger;
 
-    constructor(port: number, host: string, sampleRoutes: ISampleRoutes) {
+    constructor(port: number, host: string, sampleRoutes: ISampleRoutes, logger: ILogger) {
       this.app = express();
       this.port = port;
       this.host = host;
       this.sampleRoutes = sampleRoutes;
+      this._logger = logger;
+
       this.initBodyParser();
       // this.registerValidationError();
       this.add_Access_Control_Allow_Headers();
@@ -24,22 +28,28 @@ class RestServer implements IRestServer {
     public start(): void {
         try {
             this.app.listen(this.port, this.host);
-            console.log(`RESTful API server started on: ${this.host}:${this.port}`);
+            this._logger.info(`RESTful API server started on: ${this.host}:${this.port}`);
           } catch (error) {
-            console.error(error);
+            this._logger.error(error);
           }
     }
 
     private initBodyParser(): void {
-      this.app.use(
-        bodyParser.urlencoded({
-          extended: true,
-        })
-      );
-      this.app.use(bodyParser.json());
+      try {
+        this._logger.info('initBodyParser');
+        this.app.use(
+          bodyParser.urlencoded({
+            extended: true,
+          })
+        );
+        this.app.use(bodyParser.json());
+      } catch (error) {
+        this._logger.error(error);
+      }
     }
 
     private add_Access_Control_Allow_Headers(): void {
+      this._logger.info('add_Access_Control_Allow_Headers');
       this.app.use((req, res, next) => {
         res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3000');
 
@@ -60,8 +70,13 @@ class RestServer implements IRestServer {
     }
 
     private registerRoutes(): void {
-      this.sampleRoutes.registerApp(this.app);
-      this.sampleRoutes.attach();
+      try {
+        this._logger.info('registering routes');
+        this.sampleRoutes.registerApp(this.app);
+        this.sampleRoutes.attach();
+      } catch (error) {
+        this._logger.error(error);
+      }
     }
 
     // private registerValidationError(): void {

@@ -4,19 +4,23 @@ import ISampleController from './ISampleController';
 import HttpStatus from 'http-status-codes';
 import IValidator from '../../api/validators/IValidator';
 import ValidationError from '../../api/validators/ValidationError';
+import ILogger from 'services/ILogger';
 
 class SampleController implements ISampleController {
     private readonly _repository: ISampleRepository;
     private readonly _validator: IValidator<any>;
+    private readonly _logger: ILogger;
 
     constructor(repository: ISampleRepository,
-                validator: IValidator<any>) {
+                validator: IValidator<any>, logger: ILogger) {
         this._repository = repository;
         this._validator = validator;
+        this._logger = logger;
     }
 
     public async getAll(req: any, res: any): Promise<void> {
         try {
+            this._logger.info('SampleController getAll');
             const query = { ...req.query };
             const skip = parseInt(query.skip,  10);
             const limit = parseInt(query.limit, 10);
@@ -37,6 +41,7 @@ class SampleController implements ISampleController {
 
     public async getBySlug(req: any, res: any): Promise<void> {
         try {
+            this._logger.info('SampleController getBySlug');
             const params = { ...req.params };
             this._validator.validate(params);
 
@@ -56,6 +61,7 @@ class SampleController implements ISampleController {
 
     public async create(req: any, res: any): Promise<void> {
         try {
+            this._logger.info('SampleController create');
             const params = { ...req.body };
 
             const result = await
