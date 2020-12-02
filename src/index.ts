@@ -17,7 +17,8 @@ iocContainer.service('DatabaseManager', c => DatabaseManager.getInstance(
         ip: config.MONGOD_IP,
         port: config.MONGOD_PORT,
         dbName: config.MONGOD_DB,
-    }
+    },
+    c.Logger
 ));
 
 iocContainer.service('SampleValidator', c => new SampleValidator(c.Logger));

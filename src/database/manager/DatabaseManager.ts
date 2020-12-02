@@ -2,6 +2,7 @@ import util from 'util';
 const format = util.format;
 import mongo from 'mongodb';
 import IDatabaseManager from './IDatabaseManager';
+import ILogger from 'services/ILogger';
 
 class DataBaseManager implements IDatabaseManager {
 
@@ -13,9 +14,9 @@ class DataBaseManager implements IDatabaseManager {
         return this._connected;
     }
 
-    public static getInstance(config: any): DataBaseManager {
+    public static getInstance(config: any, logger: ILogger): DataBaseManager {
         if (!DataBaseManager.instance) {
-            DataBaseManager.instance = new DataBaseManager(config);
+            DataBaseManager.instance = new DataBaseManager(config, logger);
         }
 
         return DataBaseManager.instance;
@@ -25,14 +26,16 @@ class DataBaseManager implements IDatabaseManager {
     private _client: any;
     private _database: any;
     private _connected: boolean;
-    private _ip: string;
-    private _port: number;
-    private _dbName: string;
+    private readonly _ip: string;
+    private readonly _port: number;
+    private readonly _dbName: string;
+    private readonly _logger;
 
-    private constructor(config: any) {
+    private constructor(config: any, logger: ILogger) {
         this._ip = config.ip;
         this._port = config.port;
         this._dbName = config.dbName;
+        this._logger = logger;
     }
 
     public async connect(): Promise<void> {
@@ -60,9 +63,9 @@ class DataBaseManager implements IDatabaseManager {
                 });
             this._database = this._client.db(mongoDbName);
             this._connected = true;
-            console.log(`database is connected`);
+            this._logger.info(`database is connected`);
         } catch (error) {
-            console.error(error);
+            this._logger.error(error);
             this._connected = false;
             this._client = undefined;
             this._database = undefined;
@@ -74,10 +77,10 @@ class DataBaseManager implements IDatabaseManager {
             if (this._client) {
                 this._client.close();
                 this.resetFields();
-                console.log('disconnected from database');
+                this._logger.info('disconnected from database');
             }
         } catch (error) {
-            console.error(error);
+            this._logger.error(error);
         }
     }
 
